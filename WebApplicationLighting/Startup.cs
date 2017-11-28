@@ -43,7 +43,7 @@ namespace WebApplicationLighting
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Streets}/{action=Index}/{id?}");
             });
         }
     }
