@@ -1,0 +1,77 @@
+﻿@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    Кол-во Светильников
+                </th>
+                <th>
+                    Срок службы
+                </th>
+            <th>
+                Название Лампы
+            </th>
+            <th>
+                Название Светильника
+            </th>
+            <th>
+                Название Секции
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.StreetLightings) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CountLantern)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Failure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lamp.LampName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lantern.LanternName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section.SectionName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.StreetLightingId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.StreetLightingId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.StreetLightingId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-default btn">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-default btn">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

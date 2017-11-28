@@ -12,6 +12,11 @@ namespace WebApplicationLighting
         public virtual DbSet<StreetLightings> StreetLightings { get; set; }
         public virtual DbSet<Streets> Streets { get; set; }
 
+        public LightingContext(DbContextOptions<LightingContext> options): base(options)
+        {
+
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

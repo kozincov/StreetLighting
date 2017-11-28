@@ -1,0 +1,48 @@
+﻿@model WebApplicationLighting.StreetLightings
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>StreetLightings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CountLantern)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CountLantern)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Failure)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Failure)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lamp.LampId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lantern)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lantern.LanternId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Section)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Section.SectionId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.StreetLightingId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,0 +1,42 @@
+﻿@model WebApplicationLighting.Lamps
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Lamps</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.LampName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LampName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LampType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LampType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LifeTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LifeTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Power)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Power)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.LampId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
