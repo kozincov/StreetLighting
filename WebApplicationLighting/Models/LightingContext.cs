@@ -11,6 +11,7 @@ namespace WebApplicationLighting
         public virtual DbSet<Sections> Sections { get; set; }
         public virtual DbSet<StreetLightings> StreetLightings { get; set; }
         public virtual DbSet<Streets> Streets { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
         public LightingContext(DbContextOptions<LightingContext> options): base(options)
         {
@@ -94,6 +95,19 @@ namespace WebApplicationLighting
                 entity.HasKey(e => e.StreetId);
 
                 entity.Property(e => e.StreetId).HasColumnName("StreetID");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Email).HasMaxLength(50);
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.Property(e => e.Password).HasMaxLength(50);
             });
         }
     }

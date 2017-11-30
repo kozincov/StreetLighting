@@ -20,11 +20,11 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: Sections
-        public IActionResult Index( int page = 1)
+        public IActionResult Index(int page = 1)
         {
             int pageSize = 10;   // количество элементов на странице
 
-            var source = _context.Sections.Include(s => s.Street);
+            var source = _context.Sections.Include(s => s.Street).ToList();
             var count = source.Count();
             var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
