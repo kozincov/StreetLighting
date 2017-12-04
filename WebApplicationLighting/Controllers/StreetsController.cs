@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
+using WebApplicationLighting.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -18,23 +20,42 @@ namespace WebApplicationLighting.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "user, admin")]
         // GET: Streets
-        public IActionResult Index(int page = 1)
+        public IActionResult Index(string streetName, int page = 1, StreetsSortState sortOrder = StreetsSortState.StreetNameAsc)
         {
-            int pageSize = 10;   // количество элементов на странице
+            int pageSize = 10;
+            IQueryable<Streets> source = _context.Streets;
 
-            var source = _context.Streets.ToList();
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+            if (streetName != null)
             {
-                PageViewModel = pageViewModel,
+                source = source.Where(x => x.StreetName.Contains(streetName));
+            }
+            
+            switch (sortOrder)
+            {
+                case StreetsSortState.StreetNameAsc:
+                    source = source.OrderBy(x => x.StreetName);
+                    break;
+                
+                default:
+                    source = source.OrderBy(x => x.StreetName);
+                    break;
+            }
+
+
+
+            var count = source.Count();
+            var items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            PageViewModel pageView = new PageViewModel(count, page, pageSize);
+            IndexViewModel ivm = new IndexViewModel
+            {
+                PageViewModel = pageView,
+                SortViewModel = new SortStreetsViewModel(sortOrder),
+                FilterViewModel = new FilterStreetsViewModel(streetName),
                 Streets = items
             };
-            return View(viewModel);
+            return View(ivm);
         }
 
         // GET: Streets/Details/5

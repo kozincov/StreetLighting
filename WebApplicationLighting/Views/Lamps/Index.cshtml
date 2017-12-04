@@ -1,10 +1,30 @@
-﻿@model IndexViewModel
+﻿@using WebApplicationLighting.ViewModels;
+@model LampsViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Сведенье о Лампах</h2>
+<h2>Сведение о Лампах</h2>
+
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">LampName: </label>
+        @Html.TextBox("lampName", Model.FilterViewModel.SelectedLampName, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">LampType: </label>
+        @Html.TextBox("lampType", Model.FilterViewModel.SelectedLampType,
+                htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">LifeTime: </label>
+        @Html.TextBox("lifetime", Model.FilterViewModel.SelectedLifeTime, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">Power: </label>
+        @Html.TextBox("power", Model.FilterViewModel.SelectedPower, htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </div>
+</form>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -12,18 +32,38 @@
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    Название Лампы
-                </th>
-                <th>
-                    Тип Лампы
-                </th>
-                <th>
-                    Срок Службы
-                </th>
-                <th>
-                    Мощность
-                </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LampNameAscSort)"
+                   asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
+                   asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Сведенье о Лампах</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LampTypeAscSort)"
+                   asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
+                   asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Тип Ламп</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LifeTimeAscSort)"
+                   asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
+                   asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Срок Службы</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.PowerAscSort)"
+                   asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
+                   asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Мощность</a>
+            </th>
             <th></th>
         </tr>
     </thead>

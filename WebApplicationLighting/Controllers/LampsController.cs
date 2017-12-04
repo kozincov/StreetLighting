@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
+using WebApplicationLighting.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -18,45 +20,78 @@ namespace WebApplicationLighting.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "user, admin")]
         // GET: Lamps
-        public IActionResult Index(int page=1)
+        public IActionResult Index(string lampName, string lampType, int lifetime, int Power, int page = 1, LampsSortState sortOrder = LampsSortState.LampNameAsc)
         {
-            int pageSize = 10;   // количество элементов на странице
+            int pageSize = 10;
+            IQueryable<Lamps> source = _context.Lamps;
 
-            var source = _context.Lamps.ToList();
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+            if (lampName != null)
             {
-                PageViewModel = pageViewModel,
+                source = source.Where(x => x.LampName.Contains(lampName));
+            }
+            if (lampType != null)
+            {
+                source = source.Where(x => x.LampType.Contains(lampType));
+            }
+            if (lifetime != 0)
+            {
+                source = source.Where(x => x.LifeTime == lifetime);
+            }
+            if (Power != 0)
+            {
+                source = source.Where(x => x.Power == Power);
+            }
+
+            switch (sortOrder)
+            {
+                case LampsSortState.LampNameAsc:
+                    source = source.OrderBy(x => x.LampName);
+                    break;
+                case LampsSortState.LampNameIdDesc:
+                    source = source.OrderByDescending(x => x.LampName);
+                    break;
+                case LampsSortState.LampTypeAsc:
+                    source = source.OrderBy(x => x.LampType);
+                    break;
+                case LampsSortState.LampTypeDesc:
+                    source = source.OrderByDescending(x => x.LampType);
+                    break;
+                case LampsSortState.LifeTimeAsc:
+                    source = source.OrderBy(x => x.LifeTime);
+                    break;
+                case LampsSortState.LifeTimeDesc:
+                    source = source.OrderByDescending(x => x.LifeTime);
+                    break;
+                case LampsSortState.PowerAsc:
+                    source = source.OrderBy(x => x.Power);
+                    break;
+                case LampsSortState.PowerDesc:
+                    source = source.OrderByDescending(x => x.Power);
+                    break;
+                default:
+                    source = source.OrderBy(x => x.LampName);
+                    break;
+            }
+
+
+
+            var count = source.Count();
+            var items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            PageViewModel pageView = new PageViewModel(count, page, pageSize);
+            LampsViewModel ivm = new LampsViewModel
+            {
+                PageViewModel = pageView,
+                SortViewModel = new SortLampsViewModel(sortOrder),
+                FilterViewModel = new FilterLampsViewModel(lampName, lampType, lifetime, Power),
                 Lamps = items
             };
-            return View(viewModel);
+            return View(ivm);
         }
 
-        // GET: Lamps/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var lamps = await _context.Lamps
-                .SingleOrDefaultAsync(m => m.LampId == id);
-            if (lamps == null)
-            {
-                return NotFound();
-            }
-
-            return View(lamps);
-        }
-
-        // GET: Lamps/Create
-        public IActionResult Create()
+            // GET: Lamps/Create
+            public IActionResult Create()
         {
             return View();
         }

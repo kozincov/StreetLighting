@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebApplicationLighting.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "user, admin")]
         // GET: StreetLightings
         public IActionResult Index(int page = 1)
         {

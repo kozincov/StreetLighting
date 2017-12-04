@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebApplicationLighting.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "user, admin")]
         // GET: Sections
         public IActionResult Index(int page = 1)
         {
@@ -36,7 +37,7 @@ namespace WebApplicationLighting.Controllers
             };
             return View(viewModel);
         }
-
+        [Authorize(Roles = "user, admin")]
         // GET: Sections/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -55,7 +56,7 @@ namespace WebApplicationLighting.Controllers
 
             return View(sections);
         }
-
+        [Authorize(Roles = "admin")]
         // GET: Sections/Create
         public IActionResult Create()
         {
@@ -79,7 +80,7 @@ namespace WebApplicationLighting.Controllers
             ViewData["StreetId"] = new SelectList(_context.Streets, "StreetId", "StreetId", sections.StreetId);
             return View(sections);
         }
-
+        [Authorize(Roles = "admin")]
         // GET: Sections/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -102,6 +103,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("SectionId,BeginAndEnd,SectionName,StreetId")] Sections sections)
         {
             if (id != sections.SectionId)
@@ -132,7 +134,7 @@ namespace WebApplicationLighting.Controllers
             ViewData["StreetId"] = new SelectList(_context.Streets, "StreetId", "StreetId", sections.StreetId);
             return View(sections);
         }
-
+        [Authorize(Roles = "admin")]
         // GET: Sections/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -155,6 +157,7 @@ namespace WebApplicationLighting.Controllers
         // POST: Sections/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var sections = await _context.Sections.SingleOrDefaultAsync(m => m.SectionId == id);

@@ -1,53 +1,22 @@
-﻿@model IEnumerable<WebApplicationLighting.User>
-
+﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Start Page"; Layout = "~/Views/Shared/StartLayout.cshtml";
 }
 
-<h2>Index</h2>
+<html>
+<head>
+    <title>Pharmacy</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h3 style="margin-left:38%; font-size:50px;">@ViewData["Title"]</h3>
+    <button style="color:white; border-color:black; background-color:limegreen; font-size:33px;" type="button" class="btn btn-success" id="button" onclick="location.href='@Url.Action("Login", "Users")'">
+        Log in
+    </button><br><br><br>
+    <button style="color:white; border-color:black; background-color:limegreen; font-size:33px;" type="button" class="btn btn-success" id="button" onclick="location.href='@Url.Action("Registration", "Users")'">
+        Registration
+    </button>
+</body>
+</html>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IsAdmin)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Password)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAdmin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>

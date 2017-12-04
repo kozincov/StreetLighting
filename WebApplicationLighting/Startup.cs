@@ -29,7 +29,7 @@ namespace WebApplicationLighting
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions
                 {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Users/Login");
                 });
             services.AddMvc();
         }
@@ -40,6 +40,7 @@ namespace WebApplicationLighting
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                app.UseAuthentication();
             }
             else
             {
@@ -52,7 +53,7 @@ namespace WebApplicationLighting
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Users}/{action=Index}/{id?}");
             });
         }
     }

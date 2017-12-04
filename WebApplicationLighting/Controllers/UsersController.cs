@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using WebApplicationLighting;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -15,138 +14,86 @@ namespace WebApplicationLighting.Controllers
 
         public UsersController(LightingContext context)
         {
+            //StartData.Initialize(context);
             _context = context;
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.User.ToListAsync());
-        }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User
-                .SingleOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
+        // GET: /<controller>/
+        public IActionResult Index()
         {
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Get method for registration
+        [HttpGet]
+        public IActionResult Registration()
+        {
+            return View();
+        }
+
+        //Post method for registration
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Email,IsAdmin,Password,Name")] User user)
+        public IActionResult Registration(string name, string surname, string email, string password)
         {
-            if (ModelState.IsValid)
+            if (_context.User.Where(u => u.Email.Equals(email)).Count() == 0)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.User.Add(new User { Name = name, Email = email, IsAdmin = false, Password = password });
+                _context.SaveChanges();
+                return View("Login");
             }
-            return View(user);
+            else
+            {
+                ViewBag.Message = "User with this email exists, use other email or login with correct data!";
+                return View("Error");
+            }
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        //Get method for login
+        [HttpGet]
+        public IActionResult Login()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User.SingleOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
+            return View();
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //Method for user authentificate
+        private void Authentificate(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, (bool)user.IsAdmin ? "admin" : "user")
+            };
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
+
+        //Post method for login
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Email,IsAdmin,Password,Name")] User user)
+        public IActionResult Login(string login, string password)
         {
-            if (id != user.UserId)
+            User user = _context.User.FirstOrDefault(u => u.Email == login && u.Password == password);
+            if (user != null)
             {
-                return NotFound();
+                Authentificate(user);
+                //HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
+                return RedirectToAction("Index", "StreetLightings");
             }
-
-            if (ModelState.IsValid)
+            else
             {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ViewBag.Message = "No thats user. Try again or choose registration!";
+                return View("Error");
             }
-            return View(user);
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //Get method for login out
+        [Authorize(Roles = "admin, user")]
+        public IActionResult Logout()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User
-                .SingleOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var user = await _context.User.SingleOrDefaultAsync(m => m.UserId == id);
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.User.Any(e => e.UserId == id);
+            // HttpContext.Session.Clear();
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return View("Index");
         }
     }
 }
+

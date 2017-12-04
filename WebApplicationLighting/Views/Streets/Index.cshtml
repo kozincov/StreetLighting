@@ -1,11 +1,19 @@
-﻿@model IndexViewModel
+﻿@using WebApplicationLighting.ViewModels
+@model IndexViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Streets";
 }
 
 <h2>Сведенье о Улицах</h2>
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">StreetName: </label>
+        @Html.TextBox("streetName", Model.FilterViewModel.SelectedStreetName, htmlAttributes: new { @class = "form-control" })
 
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </div>
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -13,7 +21,9 @@
     <thead>
         <tr>
                 <th>
-                    Название Улицы
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.StreetNameAscSort)"
+                       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)">Название Улицы</a>
                 </th>
             <th></th>
         </tr>
