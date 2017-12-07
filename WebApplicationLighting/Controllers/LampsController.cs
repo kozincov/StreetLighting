@@ -22,7 +22,7 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: Lamps
-        public IActionResult Index(string lampName, string lampType, int lifetime, int Power, int page = 1, LampsSortState sortOrder = LampsSortState.LampNameAsc)
+        public IActionResult Index(string lampName, string lampType, int? lifetime, int? Power, int page = 1, LampsSortState sortOrder = LampsSortState.LampNameAsc)
         {
             int pageSize = 10;
             IQueryable<Lamps> source = _context.Lamps;
@@ -35,11 +35,11 @@ namespace WebApplicationLighting.Controllers
             {
                 source = source.Where(x => x.LampType.Contains(lampType));
             }
-            if (lifetime != 0)
+            if (lifetime != 0 && lifetime != null)
             {
                 source = source.Where(x => x.LifeTime == lifetime);
             }
-            if (Power != 0)
+            if (Power != 0 && Power != null)
             {
                 source = source.Where(x => x.Power == Power);
             }
@@ -78,7 +78,8 @@ namespace WebApplicationLighting.Controllers
 
 
             var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            IEnumerable<Lamps> items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            //var items = source.ToList();
             PageViewModel pageView = new PageViewModel(count, page, pageSize);
             LampsViewModel ivm = new LampsViewModel
             {

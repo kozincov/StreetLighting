@@ -13,8 +13,8 @@ namespace WebApplicationLighting
         public int LampId { get; set; }
         public string LampName { get; set; }
         public string LampType { get; set; }
-        public int LifeTime { get; set; }
-        public int Power { get; set; }
+        public int? LifeTime { get; set; }
+        public int? Power { get; set; }
 
         public ICollection<StreetLightings> StreetLightings { get; set; }
     }
