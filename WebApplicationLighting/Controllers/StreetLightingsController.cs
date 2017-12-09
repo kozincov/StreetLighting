@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
 using Microsoft.AspNetCore.Authorization;
+using WebApplicationLighting.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -21,25 +23,92 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: StreetLightings
-        public IActionResult Index(int page = 1)
+
+        public IActionResult Index(int countLantern, DateTime failure, string lampName, string lanternName, string sectionName, int page = 1, StreetLightingsSortState sortOrder = StreetLightingsSortState.CountLanternAsc)
         {
-            int pageSize = 10;   // количество элементов на странице
+            int pageSize = 10;
+            IQueryable<StreetLightings> source = _context.StreetLightings.Include(x => x.Lamp).Include(x => x.Lantern).Include(x => x.Section);
 
-            var source = _context.StreetLightings.Include(s => s.Lamp).Include(s => s.Lantern).Include(s => s.Section).ToList();
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+           /* if (countLantern != 0 )
             {
-                PageViewModel = pageViewModel,
-                StreetLightings = items
+                source = source.Where(x => x.CountLantern == countLantern);
+            }
+            
+            if (failure != null)
+            {
+                source = source.Where(x => x.Failure.Equals(failure));
+            }
+            if (lampName != null)
+            {
+                source = source.Where(x => x.Lamp.LampName.Contains(lampName));
+            }
+            if (lanternName != null)
+            {
+                source = source.Where(x => x.Lantern.LanternName.Contains(lanternName));
+            }
+            if (sectionName != null)
+            {
+                source = source.Where(x => x.Section.SectionName.Contains(sectionName));
+            }*/
+
+
+            switch (sortOrder)
+            {
+                case StreetLightingsSortState.CountLanternAsc:
+                    source = source.OrderBy(x => x.CountLantern);
+                    break;
+                case StreetLightingsSortState.CountLanternDesc:
+                    source = source.OrderByDescending(x => x.CountLantern);
+                    break;
+                case StreetLightingsSortState.FailureAsc:
+                    source = source.OrderBy(x => x.Failure);
+                    break;
+                case StreetLightingsSortState.FailureDesc:
+                    source = source.OrderByDescending(x => x.Failure);
+                    break;
+                case StreetLightingsSortState.LampNameAsc:
+                    source = source.OrderBy(x => x.Lamp.LampName);
+                    break;
+                case StreetLightingsSortState.LampNameDesc:
+                    source = source.OrderByDescending(x => x.Lamp.LampName);
+                    break;
+                case StreetLightingsSortState.LanternNameAsc:
+                    source = source.OrderBy(x => x.Lantern.LanternName);
+                    break;
+                case StreetLightingsSortState.LanternNameDesc:
+                    source = source.OrderByDescending(x => x.Lantern.LanternName);
+                    break;
+                case StreetLightingsSortState.SectionNameAsc:
+                    source = source.OrderBy(x => x.Section.SectionName);
+                    break;
+                case StreetLightingsSortState.SectionNameDesc:
+                    source = source.OrderByDescending(x => x.Section.SectionName);
+                    break;
+                default:
+                    source = source.OrderBy(x => x.CountLantern);
+                    break;
+            }
+
+
+
+            var count = source.Count();
+            IEnumerable<StreetLightings> items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            //var items = source.ToList();
+            PageViewModel pageView = new PageViewModel(count, page, pageSize);
+            StreetLightingsViewModel ivm = new StreetLightingsViewModel
+            {
+                PageViewModel = pageView,
+                SortViewModel = new SortStreetLightingsViewModel(sortOrder),
+                FilterViewModel = new FilterStreetLightingsViewModel(countLantern, failure, lampName,lanternName,sectionName),
+                StreetLightings = items,
+                Users = _context.User
             };
-            return View(viewModel);
+            return View(ivm);
 
         }
 
         // GET: StreetLightings/Details/5
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -61,11 +130,12 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: StreetLightings/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
-            ViewData["LampId"] = new SelectList(_context.Lamps, "LampId", "LampId");
-            ViewData["LanternId"] = new SelectList(_context.Lanterns, "LanternId", "LanternId");
-            ViewData["SectionId"] = new SelectList(_context.Sections, "SectionId", "SectionId");
+            ViewData["LampId"] = new SelectList(_context.Lamps, "LampId", "LampName");
+            ViewData["LanternId"] = new SelectList(_context.Lanterns, "LanternId", "LanternName");
+            ViewData["SectionId"] = new SelectList(_context.Sections, "SectionId", "SectionName");
             return View();
         }
 
@@ -74,6 +144,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("StreetLightingId,CountLantern,Failure,LampId,LanternId,SectionId")] StreetLightings streetLightings)
         {
             if (ModelState.IsValid)
@@ -89,6 +160,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: StreetLightings/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,6 +184,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("StreetLightingId,CountLantern,Failure,LampId,LanternId,SectionId")] StreetLightings streetLightings)
         {
             if (id != streetLightings.StreetLightingId)
@@ -146,6 +219,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: StreetLightings/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -169,6 +243,7 @@ namespace WebApplicationLighting.Controllers
         // POST: StreetLightings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var streetLightings = await _context.StreetLightings.SingleOrDefaultAsync(m => m.StreetLightingId == id);

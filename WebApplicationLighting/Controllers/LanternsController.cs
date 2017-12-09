@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
 using Microsoft.AspNetCore.Authorization;
+using WebApplicationLighting.ViewModels;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -21,24 +22,57 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: Lanterns
-        public IActionResult Index(int page =1)
+        public IActionResult Index(string lanternName, string lanternType, int page = 1, LanternsSortState sortOrder = LanternsSortState.LanternNameAsc)
         {
-            int pageSize = 10;   // количество элементов на странице
+            int pageSize = 10;
+            IQueryable<Lanterns> source = _context.Lanterns;
 
-            var source = _context.Lanterns.ToList();
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+            if (lanternName != null)
             {
-                PageViewModel = pageViewModel,
+                source = source.Where(x => x.LanternName.Contains(lanternName));
+            }
+            if (lanternType != null)
+            {
+                source = source.Where(x => x.LanternName.Contains(lanternType));
+            }
+
+            switch (sortOrder)
+            {
+                case LanternsSortState.LanternNameAsc:
+                    source = source.OrderBy(x => x.LanternName);
+                    break;
+                case LanternsSortState.LanternNameDesc:
+                    source = source.OrderByDescending(x => x.LanternName);
+                    break;
+                case LanternsSortState.LanternTypeAsc:
+                    source = source.OrderBy(x => x.LanternType);
+                    break;
+                case LanternsSortState.LanternTypeDesc:
+                    source = source.OrderByDescending(x => x.LanternType);
+                    break;
+
+                default:
+                    source = source.OrderBy(x => x.LanternName);
+                    break;
+            }
+
+
+
+            var count = source.Count();
+            var items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            PageViewModel pageView = new PageViewModel(count, page, pageSize);
+            LanternsViewModel ivm = new LanternsViewModel
+            {
+                PageViewModel = pageView,
+                SortViewModel = new SortLanternsViewModel(sortOrder),
+                FilterViewModel = new FilterLanternsViewModel(lanternName, lanternType),
                 Lanterns = items
             };
-            return View(viewModel);
+            return View(ivm);
         }
 
         // GET: Lanterns/Details/5
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

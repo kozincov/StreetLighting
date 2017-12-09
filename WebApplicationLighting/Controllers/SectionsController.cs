@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplicationLighting;
 using WebApplicationLighting.Models;
 using Microsoft.AspNetCore.Authorization;
+using WebApplicationLighting.ViewModels;
 
 namespace WebApplicationLighting.Controllers
 {
@@ -21,21 +22,65 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: Sections
-        public IActionResult Index(int page = 1)
+        public IActionResult Index(int beginAndEnd, string sectionName, string streetName,int page = 1, SectionsSortState sortOrder = SectionsSortState.BeginAndEndAsc)
         {
-            int pageSize = 10;   // количество элементов на странице
+            int pageSize = 10;
+            IQueryable<Sections> source = _context.Sections.Include(x => x.Street);
 
-            var source = _context.Sections.Include(s => s.Street).ToList();
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+            if (beginAndEnd !=0)
             {
-                PageViewModel = pageViewModel,
-                Sections = items
+                source = source.Where(x => x.BeginAndEnd == beginAndEnd);
+            }
+            if (sectionName != null)
+            {
+                source = source.Where(x => x.SectionName.Contains(sectionName));
+            }
+            if (streetName != null)
+            {
+                source = source.Where(x => x.Street.StreetName.Contains(streetName));
+            }
+
+
+            switch (sortOrder)
+            {
+                case SectionsSortState.BeginAndEndAsc:
+                    source = source.OrderBy(x => x.BeginAndEnd);
+                    break;
+                case SectionsSortState.BeginAndEndDesc:
+                    source = source.OrderByDescending(x => x.BeginAndEnd);
+                    break;
+                case SectionsSortState.SectionNameAsc:
+                    source = source.OrderBy(x => x.SectionName);
+                    break;
+                case SectionsSortState.SectionNameDesc:
+                    source = source.OrderByDescending(x => x.SectionName);
+                    break;
+                case SectionsSortState.StreetNameAsc:
+                    source = source.OrderBy(x => x.Street.StreetName);
+                    break;
+                case SectionsSortState.StreetNameDesc:
+                    source = source.OrderByDescending(x => x.Street.StreetName);
+                    break;
+                default:
+                    source = source.OrderBy(x => x.SectionName);
+                    break;
+            }
+
+
+
+            var count = source.Count();
+            IEnumerable<Sections> items = source.Skip((page - 1) * pageSize).Take(pageSize);
+            //var items = source.ToList();
+            PageViewModel pageView = new PageViewModel(count, page, pageSize);
+            SectionsViewModel ivm = new SectionsViewModel
+            {
+                PageViewModel = pageView,
+                SortViewModel = new SortSectionViewModel(sortOrder),
+                FilterViewModel = new FilterSectionsViewModel(beginAndEnd, sectionName, streetName),
+                Sections = items,
+                Users = _context.User
             };
-            return View(viewModel);
+            return View(ivm);
         }
         [Authorize(Roles = "user, admin")]
         // GET: Sections/Details/5
@@ -60,7 +105,7 @@ namespace WebApplicationLighting.Controllers
         // GET: Sections/Create
         public IActionResult Create()
         {
-            ViewData["StreetId"] = new SelectList(_context.Streets, "StreetId", "StreetId");
+            ViewData["StreetId"] = new SelectList(_context.Streets, "StreetId", "StreetName");
             return View();
         }
 
@@ -69,6 +114,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("SectionId,BeginAndEnd,SectionName,StreetId")] Sections sections)
         {
             if (ModelState.IsValid)

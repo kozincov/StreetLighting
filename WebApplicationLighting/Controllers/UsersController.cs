@@ -38,7 +38,7 @@ namespace WebApplicationLighting.Controllers
         {
             if (_context.User.Where(u => u.Email.Equals(email)).Count() == 0)
             {
-                _context.User.Add(new User { Name = name, Email = email, IsAdmin = false, Password = password });
+                _context.User.Add(new User { Name = name, Surname = surname, Email = email, IsAdmin = false, Password = password });
                 _context.SaveChanges();
                 return View("Login");
             }

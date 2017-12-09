@@ -1,4 +1,5 @@
-﻿@model IndexViewModel
+﻿@using WebApplicationLighting.ViewModels
+@model StreetLightingsViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -6,26 +7,76 @@
 
 <h2>Освещение улиц</h2>
 
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">BeginAndEnd: </label>
+        @Html.TextBox("countLantern", Model.FilterViewModel.SelectedCountLantern, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">SectionName: </label>
+        @Html.TextBox("failure", Model.FilterViewModel.SelectedFailure, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">StreetName: </label>
+        @Html.TextBox("lampName", Model.FilterViewModel.SelectedLampName, htmlAttributes: new { @class = "form-control" })
+        
+        <label class="control-label">StreetName: </label>
+        @Html.TextBox("lanternName", Model.FilterViewModel.SelectedLanternName, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">StreetName: </label>
+        @Html.TextBox("sectionName", Model.FilterViewModel.SelectedSectionName, htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </div>
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    Кол-во Светильников
-                </th>
-                <th>
-                    Срок службы
-                </th>
             <th>
-                Название Лампы
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.CountLanternAscSort)"
+                   asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+                   asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+                   asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Район</a>
             </th>
             <th>
-                Название Светильника
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.FailureAscSort)"
+                   asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+                   asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+                   asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Секции</a>
             </th>
             <th>
-                Название Секции
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LampNameAscSort)"
+                   asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+                   asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+                   asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Улицы</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LanternNameAscSort)"
+                   asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+                   asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+                   asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Улицы</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.SectionNameAscSort)"
+                   asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+                   asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+                   asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
+                   asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Улицы</a>
             </th>
             <th></th>
         </tr>

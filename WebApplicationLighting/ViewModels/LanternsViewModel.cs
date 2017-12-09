@@ -6,13 +6,12 @@ using WebApplicationLighting.Models;
 
 namespace WebApplicationLighting.ViewModels
 {
-    public class LampsViewModel
+    public class LanternsViewModel
     {
-        public IEnumerable<Lamps> Lamps { get; set; }
+        public IEnumerable<Lanterns> Lanterns { get; set; }
         public IEnumerable<User> Users { get; set; }
-        public FilterLampsViewModel FilterViewModel { get; set; }
-        public SortLampsViewModel SortViewModel { get; set; }
+        public FilterLanternsViewModel FilterViewModel { get; set; }
+        public SortLanternsViewModel SortViewModel { get; set; }
         public PageViewModel PageViewModel { get; set; }
     }
-
 }

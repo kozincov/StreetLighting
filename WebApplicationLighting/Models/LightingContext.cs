@@ -13,7 +13,7 @@ namespace WebApplicationLighting
         public virtual DbSet<Streets> Streets { get; set; }
         public virtual DbSet<User> User { get; set; }
 
-        public LightingContext(DbContextOptions<LightingContext> options): base(options)
+        public LightingContext(DbContextOptions<LightingContext> options) : base(options)
         {
 
         }
@@ -22,7 +22,7 @@ namespace WebApplicationLighting
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=дом-ПК\SQLExpress;Database=Lighting;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(@"Server=ДОМ-ПК;Database=Lighting;Trusted_Connection=True;");
             }
         }
 
@@ -64,6 +64,12 @@ namespace WebApplicationLighting
             {
                 entity.HasKey(e => e.StreetLightingId);
 
+                entity.HasIndex(e => e.LampId);
+
+                entity.HasIndex(e => e.LanternId);
+
+                entity.HasIndex(e => e.SectionId);
+
                 entity.Property(e => e.StreetLightingId).HasColumnName("StreetLightingID");
 
                 entity.Property(e => e.Failure).HasColumnType("datetime");
@@ -99,15 +105,15 @@ namespace WebApplicationLighting
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.UserId)
-                    .HasColumnName("UserID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.UserId).HasColumnName("UserID");
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.Property(e => e.Password).HasMaxLength(50);
+
+                entity.Property(e => e.Surname).HasMaxLength(50);
             });
         }
     }

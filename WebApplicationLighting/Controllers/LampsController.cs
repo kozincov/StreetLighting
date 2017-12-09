@@ -91,8 +91,29 @@ namespace WebApplicationLighting.Controllers
             return View(ivm);
         }
 
-            // GET: Lamps/Create
-            public IActionResult Create()
+        // GET: Lanterns/Details/5
+        [Authorize(Roles = "user, admin")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var lamps = await _context.Lamps
+                .SingleOrDefaultAsync(m => m.LampId == id);
+            if (lamps == null)
+            {
+                return NotFound();
+            }
+
+            return View(lamps);
+        }
+
+
+        [Authorize(Roles = "admin")]
+        // GET: Lamps/Create
+        public IActionResult Create()
         {
             return View();
         }
@@ -102,6 +123,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("LampId,LampName,LampType,LifeTime,Power")] Lamps lamps)
         {
             if (ModelState.IsValid)
@@ -112,7 +134,7 @@ namespace WebApplicationLighting.Controllers
             }
             return View(lamps);
         }
-
+        [Authorize(Roles = "user, admin")]
         // GET: Lamps/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -134,6 +156,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Edit(int id, [Bind("LampId,LampName,LampType,LifeTime,Power")] Lamps lamps)
         {
             if (id != lamps.LampId)
@@ -163,7 +186,7 @@ namespace WebApplicationLighting.Controllers
             }
             return View(lamps);
         }
-
+        [Authorize(Roles = "admin")]
         // GET: Lamps/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -185,6 +208,7 @@ namespace WebApplicationLighting.Controllers
         // POST: Lamps/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var lamps = await _context.Lamps.SingleOrDefaultAsync(m => m.LampId == id);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplicationLighting
 {
@@ -7,6 +8,8 @@ namespace WebApplicationLighting
     {
         public int StreetLightingId { get; set; }
         public int? CountLantern { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yy}", ApplyFormatInEditMode = true)]
         public DateTime? Failure { get; set; }
         public int? LampId { get; set; }
         public int? LanternId { get; set; }

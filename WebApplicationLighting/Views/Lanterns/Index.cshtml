@@ -1,4 +1,5 @@
-﻿@model IndexViewModel
+﻿@using WebApplicationLighting.ViewModels;
+@model LanternsViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -6,18 +7,34 @@
 
 <h2>Сведенье о Светильниках</h2>
 
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">LanternName: </label>
+        @Html.TextBox("lanternName", Model.FilterViewModel.SelectedLanternName, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">LanternType: </label>
+        @Html.TextBox("lanternType", Model.FilterViewModel.SelectedLanternType, htmlAttributes: new { @class = "form-control" })
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </div>
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    Название Светильника
-                </th>
-                <th>
-                    Тип Светильника
-                </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LanternNameAscSort)"
+                   asp-route-lanternName="@(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-lanternType="@(Model.FilterViewModel.SelectedLanternType)">Сведенье о Светильниках</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.LanternTypeAscSort)"
+                   asp-route-lanternName="@(Model.FilterViewModel.SelectedLanternName)"
+                   asp-route-lanternType="@(Model.FilterViewModel.SelectedLanternType)">Тип Светильников</a>
+            </th>
             <th></th>
         </tr>
     </thead>

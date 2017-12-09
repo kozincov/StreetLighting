@@ -37,7 +37,10 @@ namespace WebApplicationLighting.Controllers
                 case StreetsSortState.StreetNameAsc:
                     source = source.OrderBy(x => x.StreetName);
                     break;
-                
+                case StreetsSortState.StreetNameIdDesc:
+                    source = source.OrderByDescending(x => x.StreetName);
+                    break;
+
                 default:
                     source = source.OrderBy(x => x.StreetName);
                     break;
@@ -59,6 +62,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: Streets/Details/5
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -77,6 +81,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: Streets/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -87,6 +92,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("StreetId,StreetName")] Streets streets)
         {
             if (ModelState.IsValid)
@@ -99,6 +105,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: Streets/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -119,6 +126,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("StreetId,StreetName")] Streets streets)
         {
             if (id != streets.StreetId)
@@ -150,6 +158,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: Streets/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -170,6 +179,7 @@ namespace WebApplicationLighting.Controllers
         // POST: Streets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var streets = await _context.Streets.SingleOrDefaultAsync(m => m.StreetId == id);

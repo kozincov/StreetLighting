@@ -1,25 +1,57 @@
-﻿@model IndexViewModel
+﻿@using WebApplicationLighting.ViewModels;
+@model SectionsViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Сведенье о Секциях</h2>
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">BeginAndEnd: </label>
+        @Html.TextBox("beginAndEnd", Model.FilterViewModel.SelectedBeginAndEnd, htmlAttributes: new { @class = "form-control" })
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+        <label class="control-label">SectionName: </label>
+        @Html.TextBox("sectionName", Model.FilterViewModel.SelectedSectionName,
+                htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">StreetName: </label>
+        @Html.TextBox("streetName", Model.FilterViewModel.SelectedStreetName, htmlAttributes: new { @class = "form-control" })
+
+
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </div>
+</form>
+@if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    Район
-                </th>
-                <th>
-                    Название Секции
-                </th>
             <th>
-                Название улицы
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.BeginAndEndAscSort)"
+                   asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
+                   asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)">Район</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.SectionNameAscSort)"
+                   asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
+                   asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)">Имя Секции</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.StreetNameAscSort)"
+                   asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
+                   asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)">Имя Улицы</a>
             </th>
             <th></th>
         </tr>
@@ -37,9 +69,15 @@
                 @Html.DisplayFor(modelItem => item.Street.StreetName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.SectionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SectionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SectionId">Delete</a>
+                @if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+                {
+                    <p>
+                        <a asp-action="Edit" asp-route-id="@item.SectionId">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.SectionId">Delete</a>
+                    </p>
+                }
+                <a asp-action="Details" asp-route-id="@item.SectionId">Details</a>
+                
             </td>
         </tr>
 }

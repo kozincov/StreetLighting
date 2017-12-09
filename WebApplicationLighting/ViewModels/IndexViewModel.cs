@@ -12,6 +12,7 @@ namespace WebApplicationLighting.Models
         public IEnumerable<Lamps> Lamps { get; set; }
         public IEnumerable<Lanterns> Lanterns { get; set; }
         public IEnumerable<Sections> Sections { get; set; }
+        public IEnumerable<User> Users { get; set; }
         public IEnumerable<StreetLightings> StreetLightings { get; set; }
         public FilterStreetsViewModel FilterViewModel { get; set; }
         public SortStreetsViewModel SortViewModel { get; set; }
