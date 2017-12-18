@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Start Page"; Layout = "~/Views/Shared/StartLayout.cshtml";
+    ViewData["Title"] = "Начальная страница"; Layout = "~/Views/Shared/StartLayout.cshtml";
 }
 
 <html>
@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <h3 style="margin-left:38%; font-size:50px;">@ViewData["Title"]</h3>
+    <h3 style="margin-left:28%; font-size:50px;">@ViewData["Title"]</h3>
     <button style="color:white; border-color:black; background-color:limegreen; font-size:33px;" type="button" class="btn btn-success" id="button" onclick="location.href='@Url.Action("Login", "Users")'">
-        Log in
+        Вход
     </button><br><br><br>
     <button style="color:white; border-color:black; background-color:limegreen; font-size:33px;" type="button" class="btn btn-success" id="button" onclick="location.href='@Url.Action("Registration", "Users")'">
-        Registration
+        Регистрация
     </button>
 </body>
 </html>

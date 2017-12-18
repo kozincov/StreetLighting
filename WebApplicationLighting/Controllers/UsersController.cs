@@ -44,7 +44,7 @@ namespace WebApplicationLighting.Controllers
             }
             else
             {
-                ViewBag.Message = "User with this email exists, use other email or login with correct data!";
+                ViewBag.Message = "Пользователь с такой почтой существует, используйте другую почту или войдите под созданной учетной записью!";
                 return View("Error");
             }
         }
@@ -81,7 +81,7 @@ namespace WebApplicationLighting.Controllers
             }
             else
             {
-                ViewBag.Message = "No thats user. Try again or choose registration!";
+                ViewBag.Message = "Пользователя не существует. Проверьте данные или пройдите регистрацию!";
                 return View("Error");
             }
         }

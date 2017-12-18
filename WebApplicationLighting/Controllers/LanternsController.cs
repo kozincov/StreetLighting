@@ -22,7 +22,7 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: Lanterns
-        public IActionResult Index(string lanternName, string lanternType, int page = 1, LanternsSortState sortOrder = LanternsSortState.LanternNameAsc)
+        public IActionResult Index(string lanternName, string lanternType, string streetName, string sectionName, int page = 1, LanternsSortState sortOrder = LanternsSortState.LanternNameAsc)
         {
             int pageSize = 10;
             IQueryable<Lanterns> source = _context.Lanterns;
@@ -34,6 +34,31 @@ namespace WebApplicationLighting.Controllers
             if (lanternType != null)
             {
                 source = source.Where(x => x.LanternName.Contains(lanternType));
+            }
+            if (streetName != null)
+            {
+                List<Streets> streets = _context.Streets.Where(x => x.StreetName == streetName).ToList();
+                List<Sections> sections = new List<Sections>();
+                foreach (var item in streets)
+                {
+                    sections.AddRange(_context.Sections.Where(x => x.StreetId == item.StreetId));
+                }
+                List<Lanterns> lanterns = new List<Lanterns>();
+                foreach (var item in sections)
+                {
+                    lanterns.AddRange(_context.StreetLightings.Where(x => x.SectionId == item.SectionId).Select(x => x.Lantern));
+                }
+                source = lanterns.AsQueryable();
+            }
+            if (sectionName != null)
+            {
+                List<Sections> sections = _context.Sections.Where(x => x.SectionName == sectionName).ToList();
+                List<Lanterns> lanterns = new List<Lanterns>();
+                foreach (var item in sections)
+                {
+                    lanterns.AddRange(_context.StreetLightings.Where(x => x.SectionId == item.SectionId).Select(x => x.Lantern));
+                }
+                source = lanterns.AsQueryable();
             }
 
             switch (sortOrder)
@@ -65,8 +90,9 @@ namespace WebApplicationLighting.Controllers
             {
                 PageViewModel = pageView,
                 SortViewModel = new SortLanternsViewModel(sortOrder),
-                FilterViewModel = new FilterLanternsViewModel(lanternName, lanternType),
-                Lanterns = items
+                FilterViewModel = new FilterLanternsViewModel(lanternName, lanternType, streetName, sectionName),
+                Lanterns = items,
+                Users = _context.User
             };
             return View(ivm);
         }

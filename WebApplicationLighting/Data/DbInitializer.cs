@@ -15,8 +15,7 @@ namespace WebApplicationLighting.Data
             
 
             Random randObj = new Random(1);
-
-            string StreetName;
+            
             string[] streetName = { "Гагарина", "Набережная", "Школьная", "Сухого", "Фестивальная", "Совецкая", "Ковалева", "Снежкова", "Молодежная", "Речицкое шоссе", "Проспект октября", "Ленина", "Паново", "Гомельская", "Илича" };
             if (!context.Streets.Any())
             {

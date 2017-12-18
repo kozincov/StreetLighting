@@ -22,12 +22,12 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: Sections
-        public IActionResult Index(int beginAndEnd, string sectionName, string streetName,int page = 1, SectionsSortState sortOrder = SectionsSortState.BeginAndEndAsc)
+        public IActionResult Index(int? beginAndEnd, string sectionName, string streetName,int page = 1, SectionsSortState sortOrder = SectionsSortState.BeginAndEndAsc)
         {
             int pageSize = 10;
             IQueryable<Sections> source = _context.Sections.Include(x => x.Street);
 
-            if (beginAndEnd !=0)
+            if (beginAndEnd !=0 && beginAndEnd != null)
             {
                 source = source.Where(x => x.BeginAndEnd == beginAndEnd);
             }
@@ -101,7 +101,7 @@ namespace WebApplicationLighting.Controllers
 
             return View(sections);
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user, admin")]
         // GET: Sections/Create
         public IActionResult Create()
         {
@@ -114,7 +114,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Create([Bind("SectionId,BeginAndEnd,SectionName,StreetId")] Sections sections)
         {
             if (ModelState.IsValid)

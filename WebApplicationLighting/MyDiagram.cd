@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebApplicationLighting.Lamps">
+    <Position X="6.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAABAAAAAAAAAAAAAgAAAAAQCAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Lamps.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApplicationLighting.Lanterns">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAgCAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Models\Lanterns.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApplicationLighting.Sections">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACEAAAAAAAAAAEAACAAAAAAIAAAAQAAA=</HashCode>
+      <FileName>Models\Sections.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Street" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.StreetLightings">
+    <Position X="3.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAABAAwAAACAACAAAIAUAAA=</HashCode>
+      <FileName>Models\StreetLightings.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Lamp" />
+      <Property Name="Section" />
+      <Property Name="Lantern" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.Streets">
+    <Position X="1.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAECAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Models\Streets.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApplicationLighting.User">
+    <Position X="6.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAwADAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApplicationLighting.Controllers.LampsController">
+    <Position X="9.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBACAAAAAAAAAAAEAAEACAAFAAAAAAAA=</HashCode>
+      <FileName>Controllers\LampsController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.Controllers.LanternsController">
+    <Position X="12" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBACCAAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\LanternsController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.LightingContext" Collapsed="true">
+    <Position X="11.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAgAQAAAAAQAAAAAAAAEAACAAAAAEAQAAAAAAA=</HashCode>
+      <FileName>Models\LightingContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApplicationLighting.Controllers.SectionsController">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBACAAAAAAAAAAAEAAEACAAEAAAEAAAA=</HashCode>
+      <FileName>Controllers\SectionsController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.Controllers.StreetLightingsController">
+    <Position X="14.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBACAAAAAAAAAAAGAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\StreetLightingsController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.Controllers.StreetsController">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBACAAAAAAAAAAAEAAEACAAEAAAAAABA=</HashCode>
+      <FileName>Controllers\StreetsController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WebApplicationLighting.Controllers.UsersController">
+    <Position X="14.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIABAAAAAAAAAIAAAAAAAAAAAEQAAAEAAA=</HashCode>
+      <FileName>Controllers\UsersController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

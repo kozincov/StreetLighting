@@ -22,10 +22,11 @@ namespace WebApplicationLighting.Controllers
         }
         [Authorize(Roles = "user, admin")]
         // GET: Lamps
-        public IActionResult Index(string lampName, string lampType, int? lifetime, int? Power, int page = 1, LampsSortState sortOrder = LampsSortState.LampNameAsc)
+        public IActionResult Index(string lampName, string lampType, int? lifetime, int? Power, string streetName, string sectionName, int page = 1, LampsSortState sortOrder = LampsSortState.LampNameAsc)
         {
             int pageSize = 10;
             IQueryable<Lamps> source = _context.Lamps;
+            IQueryable<StreetLightings> sourse = _context.StreetLightings.Include(x => x.SectionId);
 
             if (lampName != null)
             {
@@ -42,6 +43,31 @@ namespace WebApplicationLighting.Controllers
             if (Power != 0 && Power != null)
             {
                 source = source.Where(x => x.Power == Power);
+            }
+            if (streetName != null)
+            {
+                List<Streets> streets = _context.Streets.Where(x => x.StreetName == streetName).ToList();
+                List<Sections> sections = new List<Sections>();
+                foreach (var item in streets)
+                {
+                    sections.AddRange(_context.Sections.Where(x => x.StreetId == item.StreetId));
+                }
+                List<Lamps> lamps = new List<Lamps>();
+                foreach (var item in sections)
+                {
+                    lamps.AddRange(_context.StreetLightings.Where(x => x.SectionId == item.SectionId).Select(x => x.Lamp));
+                }
+                source = lamps.AsQueryable();
+            }
+            if (sectionName != null)
+            {
+                List<Sections> sections = _context.Sections.Where(x => x.SectionName == sectionName).ToList();
+                List<Lamps> lamps = new List<Lamps>();
+                foreach (var item in sections)
+                {
+                    lamps.AddRange(_context.StreetLightings.Where(x => x.SectionId == item.SectionId).Select(x => x.Lamp));
+                }
+                source = lamps.AsQueryable();
             }
 
             switch (sortOrder)
@@ -85,8 +111,9 @@ namespace WebApplicationLighting.Controllers
             {
                 PageViewModel = pageView,
                 SortViewModel = new SortLampsViewModel(sortOrder),
-                FilterViewModel = new FilterLampsViewModel(lampName, lampType, lifetime, Power),
-                Lamps = items
+                FilterViewModel = new FilterLampsViewModel(lampName, lampType, lifetime, Power, streetName, sectionName),
+                Lamps = items,
+                Users = _context.User
             };
             return View(ivm);
         }

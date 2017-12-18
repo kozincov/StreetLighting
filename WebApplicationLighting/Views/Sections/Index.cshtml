@@ -8,26 +8,26 @@
 <h2>Сведенье о Секциях</h2>
 <form method="get">
     <div class="form-inline">
-        <label class="control-label">BeginAndEnd: </label>
+        <label class="control-label">Район: </label>
         @Html.TextBox("beginAndEnd", Model.FilterViewModel.SelectedBeginAndEnd, htmlAttributes: new { @class = "form-control" })
 
-        <label class="control-label">SectionName: </label>
+        <label class="control-label">Название Секции: </label>
         @Html.TextBox("sectionName", Model.FilterViewModel.SelectedSectionName,
                 htmlAttributes: new { @class = "form-control" })
 
-        <label class="control-label">StreetName: </label>
+        <label class="control-label">Название Улицы: </label>
         @Html.TextBox("streetName", Model.FilterViewModel.SelectedStreetName, htmlAttributes: new { @class = "form-control" })
 
 
-        <input type="submit" value="Filter" class="btn btn-default" />
+        <input type="submit" value="Поиск" class="btn btn-default" />
     </div>
 </form>
-@if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
-{
+@*@if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+{*@
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create"style="color:darkorange">Создать новый</a>
     </p>
-}
+@*}*@
 
 <table class="table">
     <thead>
@@ -37,21 +37,21 @@
                    asp-route-sortOrder="@(Model.SortViewModel.BeginAndEndAscSort)"
                    asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
                    asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
-                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)">Район</a>
+                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)"style="color:darkorange">Район</a>
             </th>
             <th>
                 <a asp-action="Index"
                    asp-route-sortOrder="@(Model.SortViewModel.SectionNameAscSort)"
                    asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
                    asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
-                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)">Имя Секции</a>
+                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)"style="color:darkorange">Имя Секции</a>
             </th>
             <th>
                 <a asp-action="Index"
                    asp-route-sortOrder="@(Model.SortViewModel.StreetNameAscSort)"
                    asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
                    asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
-                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)">Имя Улицы</a>
+                   asp-route-streetName=" @(Model.FilterViewModel.SelectedStreetName)"style="color:darkorange">Имя Улицы</a>
             </th>
             <th></th>
         </tr>
@@ -72,11 +72,11 @@
                 @if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
                 {
                     <p>
-                        <a asp-action="Edit" asp-route-id="@item.SectionId">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.SectionId">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.SectionId"style="color:darkorange">Изменение</a> |
+                        <a asp-action="Delete" asp-route-id="@item.SectionId"style="color:darkorange">Удаление</a>
                     </p>
                 }
-                <a asp-action="Details" asp-route-id="@item.SectionId">Details</a>
+                <a asp-action="Details" asp-route-id="@item.SectionId"style="color:darkorange">Просмотр</a>
                 
             </td>
         </tr>
@@ -87,6 +87,10 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
+       asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"       
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         <i class="glyphicon glyphicon-chevron-left"></i>
         Назад
@@ -96,6 +100,10 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       asp-route-beginAndEnd="@(Model.FilterViewModel.SelectedBeginAndEnd)"
+       asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)" 
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         Вперед
         <i class="glyphicon glyphicon-chevron-right"></i>

@@ -56,7 +56,8 @@ namespace WebApplicationLighting.Controllers
                 PageViewModel = pageView,
                 SortViewModel = new SortStreetsViewModel(sortOrder),
                 FilterViewModel = new FilterStreetsViewModel(streetName),
-                Streets = items
+                Streets = items,
+                Users = _context.User
             };
             return View(ivm);
         }
@@ -81,7 +82,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: Streets/Create
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user, admin")]
         public IActionResult Create()
         {
             return View();
@@ -92,7 +93,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Create([Bind("StreetId,StreetName")] Streets streets)
         {
             if (ModelState.IsValid)

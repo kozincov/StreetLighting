@@ -8,22 +8,25 @@
 <h2>Сведенье о Улицах</h2>
 <form method="get">
     <div class="form-inline">
-        <label class="control-label">StreetName: </label>
+        <label class="control-label">Название Улицы: </label>
         @Html.TextBox("streetName", Model.FilterViewModel.SelectedStreetName, htmlAttributes: new { @class = "form-control" })
 
-        <input type="submit" value="Filter" class="btn btn-default" />
+        <input type="submit" value="Поиск" class="btn btn-default" />
     </div>
 </form>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@*@if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+{*@
+    <p>
+        <a asp-action="Create"style="color:darkorange">Создать новый</a>
+    </p>
+@*}*@
 <table class="table">
     <thead>
         <tr>
                 <th>
                     <a asp-action="Index"
                        asp-route-sortOrder="@(Model.SortViewModel.StreetNameAscSort)"
-                       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)">Название Улицы</a>
+                       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)" style="color:darkorange">Название Улицы</a>
                 </th>
             <th></th>
         </tr>
@@ -35,9 +38,14 @@
                 @Html.DisplayFor(modelItem => item.StreetName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.StreetId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StreetId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StreetId">Delete</a>
+                @if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+                {
+                    <p>
+                        <a asp-action="Edit" asp-route-id="@item.StreetId"style="color:darkorange">Изменение</a> |
+                        <a asp-action="Delete" asp-route-id="@item.StreetId"style="color:darkorange">Удаление</a>
+                    </p>
+                }
+                <a asp-action="Details" asp-route-id="@item.StreetId"style="color:darkorange">Просмотр</a>
             </td>
         </tr>
 }
@@ -47,6 +55,8 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         <i class="glyphicon glyphicon-chevron-left"></i>
         Назад
@@ -56,6 +66,8 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         Вперед
         <i class="glyphicon glyphicon-chevron-right"></i>

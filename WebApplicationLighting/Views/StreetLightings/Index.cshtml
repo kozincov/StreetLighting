@@ -5,31 +5,37 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Освещение улиц</h2>
+<h2>Освещение Улиц</h2>
 
 <form method="get">
     <div class="form-inline">
-        <label class="control-label">BeginAndEnd: </label>
+        <label class="control-label">Кол-во Светильников: </label>
         @Html.TextBox("countLantern", Model.FilterViewModel.SelectedCountLantern, htmlAttributes: new { @class = "form-control" })
 
-        <label class="control-label">SectionName: </label>
+        <label class="control-label">Дата выхода из строя: </label>
         @Html.TextBox("failure", Model.FilterViewModel.SelectedFailure, htmlAttributes: new { @class = "form-control" })
 
-        <label class="control-label">StreetName: </label>
+        <label class="control-label">Название Лампы: </label>
         @Html.TextBox("lampName", Model.FilterViewModel.SelectedLampName, htmlAttributes: new { @class = "form-control" })
         
-        <label class="control-label">StreetName: </label>
+        <br><label class="control-label">Название Светильника: </label>
         @Html.TextBox("lanternName", Model.FilterViewModel.SelectedLanternName, htmlAttributes: new { @class = "form-control" })
-
-        <label class="control-label">StreetName: </label>
+        
+        <label class="control-label"><br>Название Секции: </label>
         @Html.TextBox("sectionName", Model.FilterViewModel.SelectedSectionName, htmlAttributes: new { @class = "form-control" })
 
-        <input type="submit" value="Filter" class="btn btn-default" />
+        <label class="control-label">Название Улицы: </label>
+        @Html.TextBox("streetName", Model.FilterViewModel.SelectedStreetName, htmlAttributes: new { @class = "form-control" })
+       
+        <input type="submit" value="Поиск" class="btn btn-default" />
     </div>
 </form>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@*if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+{*@
+    <p>
+        <a asp-action="Create"style="color:darkorange">Создать новый</a>
+    </p>
+@*}*@
 <table class="table">
     <thead>
         <tr>
@@ -40,7 +46,7 @@
                    asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
                    asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
                    asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
-                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Район</a>
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)"style="color:darkorange">Кол-во Светильников</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -49,7 +55,7 @@
                    asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
                    asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
                    asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
-                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Секции</a>
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)"style="color:darkorange">Дата выхода из строя</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -58,7 +64,7 @@
                    asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
                    asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
                    asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
-                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Улицы</a>
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)"style="color:darkorange">Название Лампы</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -67,7 +73,7 @@
                    asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
                    asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
                    asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
-                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Улицы</a>
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)"style="color:darkorange">Название Светильника</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -76,7 +82,7 @@
                    asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
                    asp-route-lampName=" @(Model.FilterViewModel.SelectedLampName)"
                    asp-route-lanternName=" @(Model.FilterViewModel.SelectedLanternName)"
-                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)">Имя Улицы</a>
+                   asp-route-sectionName=" @(Model.FilterViewModel.SelectedSectionName)"style="color:darkorange">Название Секции</a>
             </th>
             <th></th>
         </tr>
@@ -100,9 +106,14 @@
                 @Html.DisplayFor(modelItem => item.Section.SectionName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.StreetLightingId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StreetLightingId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StreetLightingId">Delete</a>
+                @if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+                {
+                    <p>
+                        <a asp-action="Edit" asp-route-id="@item.StreetLightingId"style="color:darkorange">Изменение</a> |
+                        <a asp-action="Delete" asp-route-id="@item.StreetLightingId"style="color:darkorange">Удаление</a>
+                    </p>
+                }
+                <a asp-action="Details" asp-route-id="@item.StreetLightingId"style="color:darkorange">Просмотр</a>
             </td>
         </tr>
 }
@@ -112,6 +123,14 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-streetLighting="@(Model.FilterViewModel.streetLightings)"
+       asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+       asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+       asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+       asp-route-lanternName="@(Model.FilterViewModel.SelectedLanternName)"
+       asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         <i class="glyphicon glyphicon-chevron-left"></i>
         Назад
@@ -121,6 +140,14 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       asp-route-streetLighting="@(Model.FilterViewModel.streetLightings)"
+       asp-route-countLantern="@(Model.FilterViewModel.SelectedCountLantern)"
+       asp-route-failure="@(Model.FilterViewModel.SelectedFailure)"
+       asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+       asp-route-lanternName="@(Model.FilterViewModel.SelectedLanternName)"
+       asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         Вперед
         <i class="glyphicon glyphicon-chevron-right"></i>

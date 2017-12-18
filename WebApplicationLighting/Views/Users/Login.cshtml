@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Login"; Layout = "~/Views/Shared/StartLayout.cshtml";
+    ViewData["Title"] = "Log in"; Layout = "~/Views/Shared/StartLayout.cshtml";
 }
 
 <html>
@@ -10,15 +10,15 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <h2 style="margin-left:40%; font-size:40px;">Login page</h2>
+    <h2 style="margin-left:45%; font-size:40px;">Вход</h2>
     <form method="post" action="~/Users/Login">
-        <label style="margin-left:47%; font-size:20px;">Login: </label>
+        <label style="margin-left:47%; font-size:20px;">Логин: </label>
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-        <input class="form-control" type="text" name="login" />
-        <label style="margin-left:45%; font-size:20px;">Password: </label>
+        <input class="form-control" type="text" name="login" required/>
+        <label style="margin-left:47%; font-size:20px;">Пароль: </label>
         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-        <input type="password" class="form-control" name="password" />
-        <input style="color:white; border-color:black; background-color:limegreen; font-size:33px;" type="submit" class="btn btn-success" value="Login" />
+        <input type="password" class="form-control" name="password" required/>
+        <input style="color:white; border-color:black; background-color:limegreen; font-size:33px;" type="submit" class="btn btn-success" value="Войти" />
     </form>
 </body>
 </html>

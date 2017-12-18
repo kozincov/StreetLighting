@@ -24,12 +24,12 @@ namespace WebApplicationLighting.Controllers
         [Authorize(Roles = "user, admin")]
         // GET: StreetLightings
 
-        public IActionResult Index(int countLantern, DateTime failure, string lampName, string lanternName, string sectionName, int page = 1, StreetLightingsSortState sortOrder = StreetLightingsSortState.CountLanternAsc)
+        public IActionResult Index(int? countLantern, DateTime? failure, string lampName, string lanternName, string sectionName, string streetName, int page = 1, StreetLightingsSortState sortOrder = StreetLightingsSortState.CountLanternAsc)
         {
             int pageSize = 10;
             IQueryable<StreetLightings> source = _context.StreetLightings.Include(x => x.Lamp).Include(x => x.Lantern).Include(x => x.Section);
 
-           /* if (countLantern != 0 )
+            if (countLantern != 0 && countLantern != null)
             {
                 source = source.Where(x => x.CountLantern == countLantern);
             }
@@ -46,11 +46,25 @@ namespace WebApplicationLighting.Controllers
             {
                 source = source.Where(x => x.Lantern.LanternName.Contains(lanternName));
             }
-            if (sectionName != null)
+            if (sectionName != null)    
             {
                 source = source.Where(x => x.Section.SectionName.Contains(sectionName));
-            }*/
-
+            }
+            if (streetName != null)
+            {
+                List<Streets> streets = _context.Streets.Where(x => x.StreetName == streetName).ToList();
+                List<Sections> sections = new List<Sections>();
+                foreach (var item in streets)
+                {
+                    sections.AddRange(_context.Sections.Where(x => x.StreetId == item.StreetId));
+                }
+                List<StreetLightings> streetLightings = new List<StreetLightings>();
+                foreach (var item in sections)
+                {
+                    streetLightings.AddRange(_context.StreetLightings.Where(x => x.SectionId == item.SectionId));
+                }
+                source = streetLightings.AsQueryable();
+            }
 
             switch (sortOrder)
             {
@@ -99,7 +113,7 @@ namespace WebApplicationLighting.Controllers
             {
                 PageViewModel = pageView,
                 SortViewModel = new SortStreetLightingsViewModel(sortOrder),
-                FilterViewModel = new FilterStreetLightingsViewModel(countLantern, failure, lampName,lanternName,sectionName),
+                FilterViewModel = new FilterStreetLightingsViewModel(countLantern, failure, lampName,lanternName,sectionName,streetName),
                 StreetLightings = items,
                 Users = _context.User
             };
@@ -130,7 +144,7 @@ namespace WebApplicationLighting.Controllers
         }
 
         // GET: StreetLightings/Create
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user, admin")]
         public IActionResult Create()
         {
             ViewData["LampId"] = new SelectList(_context.Lamps, "LampId", "LampName");
@@ -144,7 +158,7 @@ namespace WebApplicationLighting.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Create([Bind("StreetLightingId,CountLantern,Failure,LampId,LanternId,SectionId")] StreetLightings streetLightings)
         {
             if (ModelState.IsValid)

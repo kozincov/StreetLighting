@@ -9,26 +9,38 @@
 
 <form method="get">
     <div class="form-inline">
-        <label class="control-label">LampName: </label>
+        <label class="control-label">Название Ламп: </label>
         @Html.TextBox("lampName", Model.FilterViewModel.SelectedLampName, htmlAttributes: new { @class = "form-control" })
 
-        <label class="control-label">LampType: </label>
+        <label class="control-label">Тип Ламп: </label>
         @Html.TextBox("lampType", Model.FilterViewModel.SelectedLampType,
                 htmlAttributes: new { @class = "form-control" })
 
-        <label class="control-label">LifeTime: </label>
+        <label class="control-label">Срок Службы: </label>
+        
         @Html.TextBox("lifetime", Model.FilterViewModel.SelectedLifeTime, htmlAttributes: new { @class = "form-control" })
-
-        <label class="control-label">Power: </label>
+        <br>
+        <br>
+        <label class="control-label">Мощность: </label>
         @Html.TextBox("power", Model.FilterViewModel.SelectedPower, htmlAttributes: new { @class = "form-control" })
 
-        <input type="submit" value="Filter" class="btn btn-default" />
+        <label class="control-label">Название Улицы: </label>
+        @Html.TextBox("streetName", Model.FilterViewModel.SelectedStreetName, htmlAttributes: new { @class = "form-control" })
+        <br>
+        <br>
+        <label class="control-label">Название Секции: </label>
+        @Html.TextBox("sectionName", Model.FilterViewModel.SelectedSectionName, htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Поиск" class="btn btn-default" />
     </div>
 </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+{
+    <p>
+        <a asp-action="Create"style="color:darkorange">Создать новый</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -38,7 +50,7 @@
                    asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
                    asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
                    asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
-                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Сведенье о Лампах</a>
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)"style="color:darkorange">Название Ламп</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -46,7 +58,7 @@
                    asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
                    asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
                    asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
-                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Тип Ламп</a>
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)"style="color:darkorange">Тип Ламп</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -54,7 +66,7 @@
                    asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
                    asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
                    asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
-                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Срок Службы</a>
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)"style="color:darkorange">Срок Службы</a>
             </th>
             <th>
                 <a asp-action="Index"
@@ -62,7 +74,7 @@
                    asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
                    asp-route-LampType="@(Model.FilterViewModel.SelectedLampType)"
                    asp-route-lifetime=" @(Model.FilterViewModel.SelectedLifeTime)"
-                   asp-route-power="@(Model.FilterViewModel.SelectedPower)">Мощность</a>
+                   asp-route-power="@(Model.FilterViewModel.SelectedPower)"style="color:darkorange">Мощность</a>
             </th>
             <th></th>
         </tr>
@@ -83,9 +95,14 @@
                 @Html.DisplayFor(modelItem => item.Power)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.LampId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LampId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LampId">Delete</a>
+                 @if (Model.Users.FirstOrDefault(x => x.Email == User.Identity.Name).IsAdmin)
+                {
+                    <p>
+                        <a asp-action="Edit" asp-route-id="@item.LampId"style="color:darkorange">Изменениеь</a> |
+                        <a asp-action="Delete" asp-route-id="@item.LampId"style="color:darkorange">Удаление</a>
+                    </p>
+                }
+                <a asp-action="Details" asp-route-id="@item.LampId"style="color:darkorange">Просмотр</a>
             </td>
         </tr>
 }
@@ -95,6 +112,13 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+       asp-route-lampType="@(Model.FilterViewModel.SelectedLampType)"
+       asp-route-lifeTime="@(Model.FilterViewModel.SelectedLifeTime)"
+       asp-route-power="@(Model.FilterViewModel.SelectedPower)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"
+       asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         <i class="glyphicon glyphicon-chevron-left"></i>
         Назад
@@ -104,6 +128,13 @@
 {
     <a asp-action="Index"
        asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       asp-route-lampName="@(Model.FilterViewModel.SelectedLampName)"
+       asp-route-lampType="@(Model.FilterViewModel.SelectedLampType)"
+       asp-route-lifeTime="@(Model.FilterViewModel.SelectedLifeTime)"
+       asp-route-power="@(Model.FilterViewModel.SelectedPower)"
+       asp-route-streetName="@(Model.FilterViewModel.SelectedStreetName)"
+       asp-route-sectionName="@(Model.FilterViewModel.SelectedSectionName)"
+       asp-route-sortOrder="@(Model.SortViewModel.Current)"
        class="btn btn-default btn">
         Вперед
         <i class="glyphicon glyphicon-chevron-right"></i>
